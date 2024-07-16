@@ -19,21 +19,21 @@ const SidebarItem = ({ icon: Icon, label, href }: IRoute) => {
     <button
       onClick={onClick}
       className={cn(
-        "flex items-center gap-x-2 pl-6 font-medium text-stone-500 transition-all hover:bg-stone-300/20 hover:text-stone-600",
+        "flex items-center gap-x-2 pl-6 font-medium text-slate-500 transition-all hover:bg-slate-300/20 hover:text-slate-600",
         isActive &&
-          "bg-amber-200/20 text-amber-700 hover:bg-amber-200/20 hover:text-amber-700",
+          "bg-sky-200/20 text-sky-700 hover:bg-sky-200/20 hover:text-sky-700",
       )}
     >
       <div className="flex items-center gap-x-2 py-4">
         <Icon
-          className={cn("size-6 text-stone-500", isActive && "text-amber-700")}
+          className={cn("size-6 text-slate-500", isActive && "text-sky-700")}
         />
         {label}
       </div>
 
       <div
         className={cn(
-          "ml-auto h-full border-2 border-amber-700 opacity-0 transition-all",
+          "ml-auto h-full border-2 border-sky-700 opacity-0 transition-all",
           isActive && "opacity-100",
         )}
       />
