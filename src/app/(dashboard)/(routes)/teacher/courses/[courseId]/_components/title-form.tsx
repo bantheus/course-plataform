@@ -4,20 +4,26 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { postData } from "@/lib/postData";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
+import { Pencil } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { z } from "zod";
+
+interface ITitleFormProps {
+  initialData: {
+    title: string;
+  };
+  courseId: string;
+}
 
 const formSchema = z.object({
   title: z.string().min(1, {
@@ -25,52 +31,63 @@ const formSchema = z.object({
   }),
 });
 
-const CreatePage = () => {
+const TitleForm = ({ initialData, courseId }: ITitleFormProps) => {
+  const [isEditing, setIsEditing] = useState(false);
+
+  const toggleEdit = () => setIsEditing((current) => !current);
+
   const router = useRouter();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      title: "",
-    },
+    defaultValues: initialData,
   });
 
   const { isSubmitting, isValid } = form.formState;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const result = await postData({
-      url: "/api/courses",
+      url: `/api/courses/${courseId}`,
       values,
     });
 
     if (result.success) {
-      router.push(`/teacher/courses/${result.data.id}`);
-      toast.success("Course created");
+      toast.success("Course updated");
+      toggleEdit();
+      router.refresh();
     } else {
-      toast.error(result.error || "Failed to create course");
+      toast.error(result.error || "Failed to update course");
     }
   };
 
   return (
-    <div className="mx-auto flex h-full max-w-5xl p-6 md:items-center md:justify-center">
-      <div>
-        <h1 className="text-2xl">Name your course</h1>
+    <div className="mt-6 rounded-md border bg-slate-100 p-4">
+      <div className="flex items-center justify-between font-medium">
+        Course title
+        <Button onClick={toggleEdit} variant="ghost">
+          {isEditing ? (
+            <>Cancel</>
+          ) : (
+            <>
+              <Pencil className="mr-2 size-4" />
+              Edit title
+            </>
+          )}
+        </Button>
+      </div>
 
-        <p className="text-sm text-slate-600">
-          What would you like to name your course? Don't worry, you can change
-          this later.
-        </p>
-
+      {!isEditing && <p className="mt-2 text-sm">{initialData.title}</p>}
+      {isEditing && (
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="mt-8 space-y-8"
+            className="mt-4 space-y-4"
           >
             <FormField
               control={form.control}
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Course title</FormLabel>
                   <FormControl>
                     <Input
                       disabled={isSubmitting}
@@ -78,30 +95,21 @@ const CreatePage = () => {
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    What would you teach in this course?
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
             <div className="flex items-center gap-x-2">
-              <Link href="/">
-                <Button type="button" variant="ghost">
-                  Cancel
-                </Button>
-              </Link>
-
-              <Button type="submit" disabled={!isValid || isSubmitting}>
-                Continue
+              <Button disabled={!isValid || isSubmitting} type="submit">
+                Save
               </Button>
             </div>
           </form>
         </Form>
-      </div>
+      )}
     </div>
   );
 };
 
-export default CreatePage;
+export default TitleForm;
