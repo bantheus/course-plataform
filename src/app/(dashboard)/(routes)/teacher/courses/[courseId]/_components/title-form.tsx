@@ -48,6 +48,7 @@ const TitleForm = ({ initialData, courseId }: ITitleFormProps) => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const result = await postData({
       url: `/api/courses/${courseId}`,
+      method: "PATCH",
       values,
     });
 

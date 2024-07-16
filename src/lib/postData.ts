@@ -1,12 +1,13 @@
 type PostData<T> = {
   url: string;
+  method?: "POST" | "PATCH" | "PUT" | "DELETE";
   values: T;
 };
 
-export const postData = async <T>({ url, values }: PostData<T>) => {
+export const postData = async <T>({ url, method, values }: PostData<T>) => {
   try {
     const response = await fetch(url, {
-      method: "POST",
+      method: method || "POST",
       headers: {
         "Content-Type": "application/json",
       },
