@@ -1,3 +1,4 @@
+import ToastProvider from "@/components/providers/toaster-provider";
 import { cn } from "@/lib/utils";
 import { ptBR } from "@clerk/localizations";
 import { ClerkProvider } from "@clerk/nextjs";
@@ -29,6 +30,7 @@ export default function RootLayout({
             fontSans.variable,
           )}
         >
+          <ToastProvider />
           {children}
         </body>
       </html>
