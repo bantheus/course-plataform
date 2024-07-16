@@ -37,7 +37,7 @@ const CreatePage = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const response = await fetch("/api/course", {
+      const response = await fetch("/api/courses", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -48,6 +48,7 @@ const CreatePage = () => {
       if (response.ok) {
         const responseData = await response.json();
         router.push(`/teacher/courses/${responseData.id}`);
+        toast.success("Course created");
       } else {
         toast.error("Failed to create course");
       }
